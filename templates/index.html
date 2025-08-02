@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WNBA Stats Analyzer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏀 WNBA Stats Analyzer</h1>
+            <p>Upload your CSV file to visualize top scoring players</p>
+        </header>
+
+        <main>
+            <div class="upload-section">
+                <form action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data">
+                    <div class="file-input-wrapper">
+                        <input type="file" id="csvFile" name="file" accept=".csv" required>
+                        <label for="csvFile">Choose CSV File</label>
+                    </div>
+                    
+                    <div class="options">
+                        <label for="top_n">Number of top players to show:</label>
+                        <input type="number" id="top_n" name="top_n" value="20" min="5" max="50">
+                    </div>
+                    
+                    <button type="submit">Analyze Stats</button>
+                </form>
+            </div>
+
+            {% if error %}
+            <div class="error">
+                <h3>Error:</h3>
+                <p>{{ error }}</p>
+            </div>
+            {% endif %}
+
+            {% if chart_url %}
+            <div class="results">
+                <h2>Top {{ top_n }} WNBA Players by Points Scored</h2>
+                <div class="chart-container">
+                    <img src="{{ chart_url }}" alt="WNBA Top Scorers Chart" class="chart">
+                </div>
+                
+                {% if top_players %}
+                <div class="top-players">
+                    <h3>Top 10 Scorers:</h3>
+                    <ol>
+                        {% for player in top_players %}
+                        <li>{{ player.name }}: {{ player.points }} points</li>
+                        {% endfor %}
+                    </ol>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+        </main>
+
+        <footer>
+            <p>Upload a CSV file with player names and points columns to get started</p>
+        </footer>
+    </div>
+</body>
+</html>
